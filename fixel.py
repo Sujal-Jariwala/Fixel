@@ -1,10 +1,27 @@
 import pandas as pd
 import re
+import os
 
-file_path = r'C:\Users\Sujal\Desktop\Mangaldeep_Pharmacy_Item_List.xls'
+# Prompt the user to input the file path
+# While entering the file path make sure not to use '' or ""
+file_path = input("Enter the file path of the Excel file: ")
+
+# Check if the file path ends with '.xls' or '.xlsx' extension
+if not (file_path.lower().endswith('.xls') or file_path.lower().endswith('.xlsx')):
+    print("Please provide a valid Excel file (.xls or .xlsx)")
+    exit()
+
+# Check if the file exists
+if not os.path.isfile(file_path):
+    print("File not found.")
+    exit()
 
 # Load the Excel file into a pandas DataFrame
-df = pd.read_excel(file_path)
+try:
+    df = pd.read_excel(file_path)
+except FileNotFoundError:
+    print("File not found.")
+    exit()
 
 # Search for the pattern in the DataFrame
 pattern = re.compile("Not Available", flags=re.IGNORECASE)
@@ -20,7 +37,8 @@ if not filtered_df.empty:
     print('Positions:', list(zip(*matches[matches == True].stack().index)))
 
     # Save the filtered DataFrame to a new Excel file
-    output_file_path = r'C:\Users\Sujal\Desktop\Results.xlsx'
+    # naming the new output file path with an xlsx format is a must
+    output_file_path = input("Enter the output file path to save the results: ")
     filtered_df.to_excel(output_file_path, index=False)
     print(f'Results saved to {output_file_path}')
 else:
